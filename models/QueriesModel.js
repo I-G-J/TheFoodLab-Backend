@@ -6,7 +6,7 @@ const queriesSchema = new mongoose.Schema(
     email: { type: String, required: true },
     message: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: "created_on", updatedAt: "updated_on" } }
 );
 
 export default mongoose.model("Queries", queriesSchema);
