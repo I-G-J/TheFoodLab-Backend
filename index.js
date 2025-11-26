@@ -11,6 +11,7 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import QueriesRoutes from "./routes/QueriesRoutes.js";
 import trackOrderRoutes from "./routes/trackOrderRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/queries", QueriesRoutes);
 app.use("/api/trackorder", trackOrderRoutes);
+app.use("/api/profile", profileRoutes);
 
 // CONNECT TO DATABASE
 connectDB();

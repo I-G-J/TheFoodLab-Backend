@@ -9,13 +9,16 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const booking = await Booking.create({
-      name,
-      phoneNo,
-      numPersons,
-      date,
-      timeSlot,
-    });
+    const booking = await Booking.create(
+      {
+        name,
+        phoneNo,
+        numPersons,
+        date,
+        timeSlot,
+      },
+      { timestamps: { createdAt: true, updatedAt: true } }
+    );
 
     res.status(201).json({ message: "Booking saved!", data: booking });
   } catch (err) {
