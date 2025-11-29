@@ -1,63 +1,48 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
-import "dotenv/config";
-import connectDB from "./config/db.js";
-
+import mongoose from "mongoose";
+import 'dotenv/config.js';
 import userRouter from "./routes/userRoutes.js";
 import foodRouter from "./routes/foodRoute.js";
 import orderRouter from "./routes/orderRoute.js";
-import bookingRoutes from "./routes/bookingRoutes.js";
-import contactRoutes from "./routes/contactRoutes.js";
-import QueriesRoutes from "./routes/QueriesRoutes.js";
-import trackOrderRoutes from "./routes/trackOrderRoutes.js";
-import profileRoutes from "./routes/profileRoutes.js";
+import profileRouter from "./routes/profileRoutes.js";
+import bookingRouter from "./routes/bookingRoutes.js";
+import contactRouter from "./routes/contactRoutes.js";
+import queriesRouter from "./routes/QueriesRoutes.js";
+import trackOrderRouter from "./routes/trackOrderRoutes.js";
 
+// App config
 const app = express();
+const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
-
-// CORS CONFIG
-app.use(
-  cors({
-    origin: process.env.VITE_FRONTEND_URL,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "token"],
+app.use(express.json()); // For parsing application/json
+app.use(cors({
+    origin: "http://localhost:5173",
     credentials: true,
-  })
-);
+})); // This is the crucial line to add
 
-// Allow preflight requests (VERY IMPORTANT)
-app.options("*", cors());
+// DB Config (make sure you have a .env file with MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("DB Connected"))
+    .catch((error) => console.log("DB Connection Error: ", error));
 
-// ENV VARIABLES
-const PORT = process.env.PORT || 5000;
-
-app.use("/images", express.static("uploads"));
-
+// API endpoints
 app.use("/api/user", userRouter);
 app.use("/api/food", foodRouter);
+app.use("/images", express.static('uploads'));
 app.use("/api/order", orderRouter);
-app.use("/api/booking", bookingRoutes);
-app.use("/api/contact", contactRoutes);
-app.use("/api/queries", QueriesRoutes);
-app.use("/api/trackorder", trackOrderRoutes);
-app.use("/api/profile", profileRoutes);
+app.use("/api/profile", profileRouter);
+app.use("/api/booking", bookingRouter);
+app.use("/api/contact", contactRouter);
+app.use("/api/queries", queriesRouter);
+app.use("/api/track", trackOrderRouter);
 
-// CONNECT TO DATABASE
-connectDB();
 
-// TEST ROUTES
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to TheFoodLab API!" });
+    res.send("API Working");
 });
 
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Backend working fine!" });
-});
-
-// SERVER START
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`Server started on http://localhost:${port}`);
 });

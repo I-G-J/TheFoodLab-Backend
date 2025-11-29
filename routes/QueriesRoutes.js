@@ -1,4 +1,5 @@
 import express from "express";
+import adminMiddleware from "../middleware/adminMiddleware.js";
 import {
   createQueries,
   getQueries,
@@ -6,14 +7,13 @@ import {
 } from "../controllers/QueriesController.js";
 
 const router = express.Router();
-
-// Save new user query
+// Public route for users to submit a query
 router.post("/", createQueries);
 
-// Get all queries
-router.get("/", getQueries);
+// Admin routes to view and delete queries
+router.get("/", adminMiddleware, getQueries);
 
 // Delete a query
-router.delete("/:id", deleteQueries);
+router.delete("/:id", adminMiddleware, deleteQueries);
 
 export default router;

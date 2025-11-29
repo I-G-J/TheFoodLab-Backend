@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET);
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET);
 };
 
 // Login user
@@ -25,7 +25,7 @@ export const loginUser = async (req, res) => {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.role);
     res.json({ success: true, token });
   } catch (error) {
     console.log(error);
@@ -84,7 +84,7 @@ export const registerUser = async (req, res) => {
       mobile: user.mobile,
     });
 
-    const token = createToken(user._id);
+    const token = createToken(user._id, user.role);
 
     res.json({ success: true, token });
   } catch (error) {

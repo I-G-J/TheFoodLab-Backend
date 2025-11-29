@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     mobile: { type: String, required: true },
     password: { type: String, required: true },
     cartData: { type: Object, default: {} },
+    role: { type: String, default: "user" },
   },
   { minimize: false },
   { timestamps: { createdAt: "created_on", updatedAt: "updated_on" } }

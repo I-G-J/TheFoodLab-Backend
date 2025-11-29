@@ -31,7 +31,7 @@ export const createBooking = async (req, res) => {
 export const getBookings = async (req, res) => {
   try {
     const bookings = await Booking.find().sort({ createdAt: -1 });
-    res.json(bookings);
+    res.json({ success: true, data: bookings });
   } catch (err) {
     console.error("Error fetching bookings:", err);
     res.status(500).json({ error: "Server error while fetching bookings" });
