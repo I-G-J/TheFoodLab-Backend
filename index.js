@@ -18,7 +18,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(express.json()); // For parsing application/json
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://radiant-souffle-49b389.netlify.app/",
     credentials: true,
 })); // This is the crucial line to add
 
