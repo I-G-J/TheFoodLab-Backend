@@ -5,7 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 const addFood = async (req, res) => {
     if (!req.file) {
         return res.json({ success: false, message: "No image uploaded" });
-    }
+    }    
     let image_filename = `${req.file.filename}`;
 
     const food = new foodModel({
@@ -13,7 +13,7 @@ const addFood = async (req, res) => {
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
-        image: image_filename
+        image: req.file.filename // this is the public id
     });
 
     try {
@@ -40,7 +40,7 @@ const listFood = async (req, res) => {
 const removeFood = async (req, res) => {
     try {
         const food = await foodModel.findById(req.body.id);
-        await cloudinary.uploader.destroy(food.image);
+         await cloudinary.uploader.destroy(food.image);
 
         await foodModel.findByIdAndDelete(req.body.id);
         res.json({ success: true, message: "Food Removed" });
