@@ -17,10 +17,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json()); // For parsing application/json
-app.use(cors({
-    origin: "https://radiant-souffle-49b389.netlify.app/",
-    credentials: true,
-})); // This is the crucial line to add
+app.use(cors()); // This is the crucial line to add
 
 // DB Config (make sure you have a .env file with MONGO_URI)
 mongoose.connect(process.env.MONGO_URI)

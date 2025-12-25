@@ -7,7 +7,20 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // This is an example of what the other functions in this file might look like.
 // The key function for your request is userOrders below.
 export const placeOrder = async (req, res) => {
-  const frontend_url = "http://localhost:5173";
+  let frontend_url = process.env.FRONTEND_URL;
+
+  if (!frontend_url) {
+    console.log("Error: something went wrong ");
+    return res.json({ success: false, message: "Server Error: FRONTEND_URL missing" });
+  }
+
+  // Trim whitespace to avoid issues if there are accidental spaces in the env var
+  frontend_url = frontend_url.trim();
+
+  // Remove trailing slash if present to prevent double slashes in URL (e.g. .com//verify)
+  if (frontend_url.endsWith('/')) {
+    frontend_url = frontend_url.slice(0, -1);
+  }
 
   try {
     // Create a new order document but don't save it yet
@@ -26,7 +39,7 @@ export const placeOrder = async (req, res) => {
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100, // Stripe expects amount in the smallest currency unit
+        unit_amount: Math.round(item.price * 100), // Stripe expects amount in the smallest currency unit
       },
       quantity: item.quantity,
     }));
@@ -45,7 +58,7 @@ export const placeOrder = async (req, res) => {
 
     res.json({ success: true, session_url: session.url });
   } catch (error) {
-    console.log(error);
+    console.log("Stripe Session Creation Error:", error);
     res.json({ success: false, message: "Error creating Stripe session" });
   }
 };
@@ -128,5 +141,16 @@ export const userOrders = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: "Error fetching user orders" });
+    }
+};
+
+export const trackOrder = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const order = await orderModel.findById(orderId);
+        res.json({ success: true, data: order });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: "Error tracking order" });
     }
 };
