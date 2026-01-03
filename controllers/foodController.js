@@ -6,14 +6,14 @@ const addFood = async (req, res) => {
     if (!req.file) {
         return res.json({ success: false, message: "No image uploaded" });
     }    
-    let image_filename = `${req.file.filename}`;
 
     const food = new foodModel({
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
         category: req.body.category,
-        image: req.file.filename // this is the public id
+        image: req.file.path,
+        publicId: req.file.filename
     });
 
     try {
@@ -40,7 +40,12 @@ const listFood = async (req, res) => {
 const removeFood = async (req, res) => {
     try {
         const food = await foodModel.findById(req.body.id);
-         await cloudinary.uploader.destroy(food.image);
+        let publicId = food.publicId;
+        if (!publicId) {
+            // Extract from URL if publicId not stored
+            publicId = food.image.split('/').pop().split('.')[0];
+        }
+        await cloudinary.uploader.destroy(publicId);
 
         await foodModel.findByIdAndDelete(req.body.id);
         res.json({ success: true, message: "Food Removed" });
